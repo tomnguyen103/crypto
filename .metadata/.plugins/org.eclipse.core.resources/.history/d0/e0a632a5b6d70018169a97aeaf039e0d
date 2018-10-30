@@ -1,0 +1,7 @@
+package crypto;
+	
+public class Encrypt{
+	public void main(){
+		System.out.print("hello");
+	}
+}

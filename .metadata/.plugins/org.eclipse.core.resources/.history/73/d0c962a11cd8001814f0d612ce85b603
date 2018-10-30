@@ -1,0 +1,263 @@
+package crypto;
+
+import java.io.*;
+
+import java.lang.*;
+
+
+
+class SDES{
+
+       int k1, k2;
+
+       int p1[] = { 3, 5, 2, 7, 4, 10, 1, 9, 8, 6};
+
+       int p1max = 10;
+
+       int p2[] = { 6, 3, 7, 4, 8, 5, 10, 9};
+
+       int p2max = 10;
+
+        public static final int p3[] = { 2, 4, 3, 1};
+
+        public static final int p3max = 4;
+
+        public static final int ip[] = { 2, 6, 3, 1, 4, 8, 5, 7};
+
+        public static final int ipmax = 8;
+
+        public static final int ipi[] = { 4, 1, 3, 5, 7, 2, 8, 6};
+
+        public static final int ipimax = 8;
+
+        public static final int ep[] = { 4, 1, 2, 3, 2, 3, 4, 1};
+
+        public static final int epmax = 4;
+
+        public static final int s0[][] = {{ 1, 0, 3, 2},{ 3, 2, 1, 0},{ 0, 2, 1,
+
+                                                              3},{ 3, 1, 3, 2}};
+
+        public static final int s1[][] = {{ 0, 1, 2, 3},{ 2, 0, 1, 3},{ 3, 0, 1,
+
+                                                              2},{ 2, 1, 0, 3}};
+
+       
+
+       public static int permute( int x, int p[], int pmax)
+
+       {
+
+         int y = 0;
+
+         for( int i = 0; i < p.length; ++i)
+
+          {
+
+            y <<= 1;
+
+            y |= (x >> (pmax - p[i])) & 1;
+
+        }
+
+         return y;
+
+       }
+
+       
+
+       public static int F( int R, int K)
+
+       {
+
+          int t = permute( R, ep, epmax) ^ K;
+
+          int t0 = (t >> 4) & 0xF;
+
+          int t1 = t & 0xF;
+
+          t0 = s0[ ((t0 & 0x8) >> 2) | (t0 & 1) ][ (t0 >> 1) & 0x3 ];
+
+          t1 = s1[ ((t1 & 0x8) >> 2) | (t1 & 1) ][ (t1 >> 1) & 0x3 ];
+
+           t = permute( (t0 << 2) | t1, p3, p3max);
+
+         return t;
+
+       
+
+  }
+
+
+
+  public static int fK( int m, int K)
+
+        {
+
+            int L = (m >> 4) & 0xF;
+
+            int R = m & 0xF;
+
+            return ((L ^ F(R,K)) << 4) | R;
+
+        }
+
+       
+
+  public static int SW( int x)
+
+  {
+
+   return ((x & 0xF) << 4) | ((x >> 4) & 0xF);
+
+  }
+
+       
+
+       
+
+        public byte Encrypt( int RawKey)
+
+       
+
+        {
+
+       System.out.println("\nEncryption starts......"); 
+
+       RawKey = permute( RawKey, ip, ipmax);
+
+       RawKey = fK(RawKey, k1);
+
+       RawKey = SW( RawKey);
+
+       RawKey = fK( RawKey, k2);
+
+       RawKey = permute( RawKey, ipi, ipimax);
+
+          return (byte) RawKey;
+
+       
+
+        }
+
+       
+
+       
+
+        public byte Decrypt( int RawKey)
+
+       
+
+        {
+
+          System.out.println("\nDecryption starts......");
+
+
+
+          RawKey = permute( RawKey, ip, ipmax);
+
+          RawKey = fK( RawKey, k2);
+
+          RawKey = SW( RawKey);
+
+          RawKey = fK( RawKey, k1);
+
+          RawKey = permute( RawKey, ipi, ipimax);
+
+          return (byte)RawKey;
+
+     
+
+        }
+
+       
+
+        public static void printData( int x, int n)
+
+         {
+
+           int mask = 1 << (n-1);
+
+           while( mask > 0)
+
+           {
+
+           System.out.print( ((x & mask) == 0) ? '0' : '1');
+
+           mask >>= 1;
+
+           }
+
+        }
+
+       
+
+       
+
+       
+
+        public SDES( int key)
+
+      {
+
+          key = permute( key, p1, p1max);
+
+          int t1 = (key >> 5) & 0x1F;
+
+          int t2 = key & 0x1F;
+
+          t1 = ((t1 & 0xF) << 1) | ((t1 & 0x10) >> 4);
+
+          t2 = ((t2 & 0xF) << 1) | ((t2 & 0x10) >> 4);
+
+         k1 = permute( (t1 << 5)| t2, p2, p2max);
+
+          t1 = ((t1 & 0x7) << 2) | ((t1 & 0x18) >> 3);
+
+          t2 = ((t2 & 0x7) << 2) | ((t2 & 0x18) >> 3);
+
+          k2 = permute( (t1 << 5)| t2, p2, p2max);
+
+       
+
+        }
+
+       
+
+    
+
+        public static void main( String args[]) throws Exception
+
+        {
+
+         DataInputStream di=new DataInputStream(System.in);
+
+         System.out.println("Enter 10 bit raw key:");
+
+          int K = Integer.parseInt(di.readLine(),2);
+
+          SDES A = new SDES( K);
+
+          System.out.println("Enter 8 bit plain text: ");
+
+          int m = Integer.parseInt(di.readLine(),2);
+
+          m = A.Encrypt( m);
+
+          System.out.print("Encrypted message is: ");
+
+          SDES.printData( m, 8);
+
+          m = A.Decrypt( m);
+
+          System.out.print("Decrypted message is: ");
+
+          SDES.printData( m, 8);
+
+       
+
+        }
+
+       
+
+    }
