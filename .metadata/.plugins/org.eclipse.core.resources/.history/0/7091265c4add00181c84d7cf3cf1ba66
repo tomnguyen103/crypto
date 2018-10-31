@@ -197,7 +197,12 @@ public class SDES {
 		output[6] = input[9];
 		output[7] = input[8];
 	}
-
+	
+	/////////////////////////////////////
+	//
+	//	initialPermute(...) and finalPermute(...)
+	//
+	/////////////////////////////////////
 	
 	private static byte[] initialPermute(byte[] input){
 		
@@ -229,6 +234,11 @@ public class SDES {
 		return output;
 	}
 	
+	/////////////////////////////////////
+	//
+	//	switchHalves8(...)
+	//
+	/////////////////////////////////////
 	
 	private static byte[] switchHalves8(byte[] input){
 		

@@ -69,6 +69,11 @@ public class SDES {
 			System.out.print(array[i]);
 	}
 
+	/////////////////////////////////////
+	//
+	//	Encrypt(...) and Decrypt(...)
+	//
+	/////////////////////////////////////
 
 	public static byte[] Encrypt(byte[] rawkey, byte[] plaintext){
 		byte[] key1 = new byte[8];
@@ -127,6 +132,11 @@ public class SDES {
 		return temp;
 	}
 	
+	/////////////////////////////////////
+	//
+	//	generateKeys(...)
+	//
+	/////////////////////////////////////
 	
 	private static void generateKeys(byte[] rawkey, byte[] k1, byte[] k2){
 		byte[] afterP10 = keyGenPermute10(rawkey);
@@ -197,7 +207,12 @@ public class SDES {
 		output[6] = input[9];
 		output[7] = input[8];
 	}
-
+	
+	/////////////////////////////////////
+	//
+	//	initialPermute(...) and finalPermute(...)
+	//
+	/////////////////////////////////////
 	
 	private static byte[] initialPermute(byte[] input){
 		
@@ -229,6 +244,11 @@ public class SDES {
 		return output;
 	}
 	
+	/////////////////////////////////////
+	//
+	//	switchHalves8(...)
+	//
+	/////////////////////////////////////
 	
 	private static byte[] switchHalves8(byte[] input){
 		
@@ -245,7 +265,11 @@ public class SDES {
 		return output;
 	}
 	
-
+	/////////////////////////////////////
+	//
+	//	fk(...)
+	//
+	/////////////////////////////////////
 	
 	private static void fk(byte[] input, byte[] key){
 		byte[] fromF = F(input, key);
