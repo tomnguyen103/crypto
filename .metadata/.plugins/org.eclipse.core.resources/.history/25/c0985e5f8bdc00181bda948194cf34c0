@@ -54,7 +54,7 @@ public class Message_Encoding {
 				if(str.contains("THE") && followsPunctuationRules(str)){
 					System.out.print("key1: ");
 					printArray(key1);
-					System.out.print(" key2: ");
+					System.out.print("  key2: ");
 					printArray(key2);
 					System.out.println(str);
 				}

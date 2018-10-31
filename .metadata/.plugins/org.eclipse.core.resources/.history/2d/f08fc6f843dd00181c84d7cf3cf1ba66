@@ -12,7 +12,7 @@ public class TripleDES {
 
     public static void main(String[] args) throws Exception {
 
-    	String text = "CRYPTOGRAPHY";
+    	String text = "";
 
     	byte[] codedtext = new TripleDES().encrypt(text);
     	String decodedtext = new TripleDES().decrypt(codedtext);
