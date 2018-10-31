@@ -1,7 +1,4 @@
 package crypto;
-
-import java.util.Arrays;
-
 public class SDES_Encoding 
 {
 	
@@ -17,8 +14,8 @@ public class SDES_Encoding
 		byte[] plaintext = CASCII.Convert(message);
 		byte[] ciphertext = SDES.Encrypt(key, plaintext);
 		
-		System.out.println(Arrays.toString(plaintext) + "\n");
-		System.out.println(Arrays.toString(ciphertext) + "\n");
+		System.out.println(plaintext + "\n");
+		System.out.println(ciphertext + "\n");
 		System.out.println("Message:");
 		System.out.println(message);
 		System.out.println();
